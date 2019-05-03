@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
 
-
 def pull_vidcap(vidcap, size=64, time_slice_factor=1):
 
     X = list()
@@ -20,12 +19,17 @@ def pull_vidcap(vidcap, size=64, time_slice_factor=1):
 def main(path_to_file):
     file = path_to_file + 'a4.sax.mov'
     vidcap = cv2.VideoCapture(file)
+    print("video_loaded")
 
     # count the frames -- should be ~30/second
     n_frames = 0
+    X = []
+
     while (vidcap.isOpened()):
         try:
             ret, frame = vidcap.read()
+            n, d, c = np.shape(frame)
+            X.append(frame)
             n_frames += 1
         except:
             break

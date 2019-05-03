@@ -160,15 +160,16 @@ def train(
                 true_samples = true_samples.cuda()
 
             z, x_reconstructed = model(x)
-
+            
             mmd = compute_mmd(true_samples, z)
             nll = (x_reconstructed - x).pow(2).mean()
+            absolute_err = (x_reconstructed - x).pow(2).mean()
             loss = nll + mmd
             loss.backward()
             optimizer.step()
             if i % print_every == 0:
                 print("(Batch {}) Negative log likelihood is {:.5f}, mmd loss is {:.5f}".format(
-                    i, nll.data[0], mmd.data[0]))
+                    i, nll.data, mmd.data))
             if i % plot_every == 0:
                 gen_z = Variable(
                     torch.randn(25, z_dim),
@@ -248,4 +249,4 @@ def main(z_dim=100, batch_size=200, n_epochs=10,  use_cuda=False, debug=False):
     print('Done!')
 
 if __name__ == "__main__":
-    main(z_dim=100, batch_size=256, n_epochs=4000, use_cuda=True, debug=False)
+    main(z_dim=100, batch_size=256, n_epochs=10000, use_cuda=True, debug=False)
